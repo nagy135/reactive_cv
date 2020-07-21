@@ -15,9 +15,14 @@ import Personal from './Personal'
 export default class App extends React.Component {
   constructor(props) {
     super(props);
+    this.middleKeyMapper = {
+      personal: null,
+      education: 'schools',
+      experience: 'positions'
+    }
     this.state = {
       personal: {
-        gender: 'female',
+        gender: 'male',
         degree: '',
         name: '',
         surname: '',
@@ -31,53 +36,127 @@ export default class App extends React.Component {
         city: '',
         number: '',
         country: '',
+      },
+      education: {
+        level: '',
+        schools: [{
+          name: 'ahaskfaskdjaskdjaksjd',
+          city: '',
+          field: '',
+          entry: '',
+          finish: ''
+        }]
+      },
+      experience: {
+        positions: [{
+          position: 'chujko',
+          employer: '',
+          description: '',
+          from: '',
+          to: ''
+        }]
       }
     };
-    this.handleDataUpdate = this.handleDataUpdate.bind(this);
+    // this.handleDataUpdate = this.handleDataUpdate.bind(this);
+    this.handleAddSchool = this.handleAddSchool.bind(this);
+    this.handlePopSchool = this.handlePopSchool.bind(this);
+    this.handlePersonalDataUpdate = this.handlePersonalDataUpdate.bind(this);
+    this.handleEducationDataUpdate = this.handleEducationDataUpdate.bind(this);
+    this.handleExperienceDataUpdate = this.handleExperienceDataUpdate.bind(this);
   }
-  handleDataUpdate(event, type='gender') {
+  handlePersonalDataUpdate(event, type, index=null) {
+    this.handleData('personal', type, index, event.target.value)
+  }
+  handleEducationDataUpdate(event, type, index=null) {
+    this.handleData('education', type, index, event.target.value)
+  }
+  handleExperienceDataUpdate(event, type, index=null) {
+    this.handleData('experience', type, index, event.target.value)
+  }
+  handleData(step, type, index, new_val){
     var newState = { ...this.state };
-    newState['personal'][type] = event.target.value;
+    var middleKey = this.middleKeyMapper[step];
+    if (!(index))
+      newState[step][type] = new_val;
+    else
+      newState[step][middleKey][index][type] = new_val;
+    this.setState(newState)
+    console.log(newState);
+  }
+
+  handlePopSchool(index){
+    var newState = { ...this.state };
+    newState.education.schools.splice(index, 1);
     this.setState(newState)
   }
+
+  handleAddSchool(){
+    var newState = { ...this.state };
+    newState.education.schools.push({
+      name: '',
+      city: '',
+      field: '',
+      entry: '',
+      finish: ''
+    });
+    this.setState(newState)
+  }
+
   render() {
     return (
       <Router>
         <div>
           <nav>
             <div className="d-flex justify-content-center">
-              <NavLink className="btn btn-xl btn-primary m-2" to="/personal">
-                    Personal
+              <NavLink className="btn btn-xl btn-primary m-2" to="/"
+                isActive={(match, location) => {
+                  if ([
+                    '/education',
+                    '/experience',
+                    '/skills'
+                  ].includes(location.pathname)) return false;
+                  return true;
+                }}>
+                Personal
                   </NavLink>
-                  <NavLink className="btn btn-xl btn-primary m-2" to="/education">
-                    Education
+              <NavLink className="btn btn-xl btn-primary m-2" to="/education">
+                Education
                   </NavLink>
-                  <NavLink className="btn btn-xl btn-primary m-2" to="/experience">
-                    Experience
+              <NavLink className="btn btn-xl btn-primary m-2" to="/experience">
+                Experience
                   </NavLink>
-                  <NavLink className="btn btn-xl btn-primary m-2" to="/skills">
-                    Skills
+              <NavLink className="btn btn-xl btn-primary m-2" to="/skills">
+                Skills
                   </NavLink>
             </div>
           </nav>
 
-          {/* A <Switch> looks through its children <Route>s and
-              renders the first one that matches the current URL. */}
           <Switch>
             <Route path="/education">
-              <Education />
+              <Education
+                data={this.state.education}
+                onDataUpdate={this.handleEducationDataUpdate}
+                onAddSchool={this.handleAddSchool}
+                onPopSchool={this.handlePopSchool}
+              />
             </Route>
             <Route path="/experience">
-              <Experience />
+              <Experience
+                data={this.state.experience}
+              />
             </Route>
             <Route path="/skills">
               <Skills />
             </Route>
             <Route path="/personal">
-              <Personal  onDataUpdate={this.handleDataUpdate} data={this.state.personal}/>
+              <Personal
+              onDataUpdate={this.handlePersonalDataUpdate}
+              data={this.state.personal}/>
             </Route>
             <Route path="/">
-              <Personal />
+              <Personal
+              onDataUpdate={this.handlePersonalDataUpdate}
+              data={this.state.personal}/>
             </Route>
           </Switch>
         </div>

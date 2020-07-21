@@ -2492,11 +2492,13 @@ fieldset:disabled a.btn {
 }
 .btn-primary:not(:disabled):not(.disabled):active, .btn-primary:not(:disabled):not(.disabled).active, .show > .btn-primary.dropdown-toggle {
   color: #fff;
-  background-color: #148f77;
-  border-color: #12846e;
+  background-color: #2C3E51;
+  /* background-color: #148f77; */
+  border-color: #0b0b0b;
+  /* border-color: #12846e; */
 }
 .btn-primary:not(:disabled):not(.disabled):active:focus, .btn-primary:not(:disabled):not(.disabled).active:focus, .show > .btn-primary.dropdown-toggle:focus {
-  box-shadow: 0 0 0 0.2rem rgba(60, 198, 171, 0.5);
+  /* box-shadow: 0 0 0 0.2rem rgba(60, 198, 171, 0.5); */
 }
 
 .btn-secondary {
